@@ -1,0 +1,82 @@
+package consultorio;
+
+import java.util.Scanner;
+import Fila.FilaInt;
+
+
+public class Consultorio {
+
+	public static void main(String[] args) {
+
+		Scanner le = new Scanner(System.in);
+		FilaInt filaAtend = new FilaInt();
+		FilaInt filaAguardarInternacao = new FilaInt();
+		String internacao[] = new String[2];
+		filaAtend.init();
+
+		int opcao;
+		String cpf, aux;
+		int r1, r2, r3;
+		do {
+			System.out.println(
+					"\n1-Recepção do paciente (Inserir paciente na fila) \n2-Atende paciente \n3-Liberação \n4-Sair");
+			opcao = le.nextInt();
+			System.out.println();
+			switch (opcao) {
+			case 1:
+				System.out.print("Digite o cpf do paciente: ");
+				cpf = le.next();
+				filaAtend.enqueue(cpf);
+				break;
+			case 2:
+				if (!filaAtend.isEmpty()) {
+					System.out.println("Você teve febre? 1 - sim e 2 - não");
+					r1 = le.nextInt();
+					System.out.println("Você teve coriza? 1 - sim e 2 - não");
+					r2 = le.nextInt();
+					System.out.println("Você teve falta de ar? 1 - sim e 2 - não");
+					r3 = le.nextInt();
+					if (r1 == 1 && r2 == 1 && r3 == 1) {
+						for (int i = 0; i < internacao.length; i++) {
+							if (internacao[i] == null) {
+								internacao[i] = filaAtend.dequeue();
+								System.out.println("Paciente internado");
+							} else {
+								filaAguardarInternacao.enqueue(filaAtend.dequeue());
+								System.out.println("Paciente adicionado a fila de internação");
+							}
+						}
+					} else {
+						System.err.println("safe ta liberado");
+						filaAtend.dequeue();
+					}
+				} else {
+					System.err.println("Todos os pacientes foram atendidos!");
+				}
+				break;
+			case 3:
+				for (int i = 0; i < internacao.length; i++) {
+					System.out.println("Digite o cpf do paciente: ");
+					aux = le.next();
+					if (aux == internacao[i]) {
+						internacao[i] = " ";
+						System.out.println("Paciente liberado!");
+					}
+				}
+				break;
+			case 4:
+				if (filaAtend.isEmpty()) {
+					System.out.println("Encerrando atendimento do dia...");
+				} else {
+					System.err.println("Há pacientes na fila!");
+					opcao = 0;
+				}
+				break;
+			default:
+				System.err.println("Opção inválida!!!");
+				break;
+			}
+		} while (opcao != 3);
+		le.close();
+	}
+}
